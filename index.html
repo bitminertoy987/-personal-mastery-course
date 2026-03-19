@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Mastery Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e11;
+    --surface: #16161b;
+    --surface2: #1e1e26;
+    --surface3: #26263200;
+    --border: #2a2a38;
+    --accent: #c9a84c;
+    --accent2: #7b6fe0;
+    --accent3: #4ecdc4;
+    --text: #e8e8f0;
+    --muted: #888898;
+    --danger: #e07b7b;
+    --success: #7be0a0;
+    --sidebar-w: 300px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;line-height:1.7;}
+
+  /* SIDEBAR */
+  #sidebar{
+    width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;position:sticky;top:0;overflow-y:auto;
+    background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;
+  }
+  #sidebar::-webkit-scrollbar{width:4px;}
+  #sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+  .sidebar-header .logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:var(--accent);letter-spacing:.5px;}
+  .sidebar-header .sub{font-size:.7rem;color:var(--muted);margin-top:2px;letter-spacing:1.5px;text-transform:uppercase;}
+  .progress-bar{height:3px;background:var(--border);margin:12px 0 0;border-radius:2px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .5s;}
+
+  .mod-block{border-bottom:1px solid var(--border);}
+  .mod-header{
+    padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:10px;
+    font-size:.8rem;font-weight:600;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;
+    transition:all .2s;user-select:none;
+  }
+  .mod-header:hover{color:var(--text);background:var(--surface2);}
+  .mod-header.active{color:var(--accent);}
+  .mod-num{
+    width:22px;height:22px;border-radius:50%;background:var(--border);
+    font-size:.65rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;
+  }
+  .mod-header.active .mod-num{background:var(--accent);color:#000;}
+  .mod-arrow{margin-left:auto;transition:transform .25s;font-size:.6rem;}
+  .mod-header.open .mod-arrow{transform:rotate(90deg);}
+  .topic-list{display:none;padding:4px 0 8px;}
+  .topic-list.open{display:block;}
+  .topic-item{
+    padding:7px 20px 7px 52px;font-size:.78rem;cursor:pointer;color:var(--muted);
+    transition:all .15s;border-left:2px solid transparent;
+  }
+  .topic-item:hover{color:var(--text);background:var(--surface2);}
+  .topic-item.visited{color:var(--text);}
+  .topic-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(201,168,76,.07);}
+
+  /* MAIN */
+  #main{flex:1;overflow-y:auto;padding:0;}
+  #main::-webkit-scrollbar{width:6px;}
+  #main::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+  .hero{
+    padding:80px 80px 60px;background:linear-gradient(135deg,#12121a 0%,#1a1624 50%,#121820 100%);
+    border-bottom:1px solid var(--border);position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;top:-50%;right:-10%;width:600px;height:600px;
+    background:radial-gradient(circle,rgba(123,111,224,.12) 0%,transparent 70%);pointer-events:none;
+  }
+  .hero-tag{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;line-height:1.1;margin-bottom:20px;}
+  .hero h1 em{color:var(--accent);font-style:normal;}
+  .hero p{font-size:1rem;color:var(--muted);max-width:560px;line-height:1.8;}
+  .hero-stats{display:flex;gap:40px;margin-top:36px;}
+  .stat{text-align:left;}
+  .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--accent);}
+  .stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+  .content-area{padding:60px 80px;max-width:900px;}
+
+  /* MODULE SECTION */
+  .module-section{margin-bottom:80px;}
+  .module-title-bar{
+    display:flex;align-items:center;gap:16px;margin-bottom:40px;
+    padding-bottom:20px;border-bottom:2px solid var(--border);
+  }
+  .module-badge{
+    font-family:'DM Mono',monospace;font-size:.7rem;padding:4px 10px;
+    border:1px solid var(--accent);color:var(--accent);border-radius:3px;flex-shrink:0;
+  }
+  .module-title{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;}
+  .module-desc{color:var(--muted);font-size:.9rem;margin-top:6px;}
+
+  /* TOPIC */
+  .topic{margin-bottom:60px;scroll-margin-top:30px;}
+  .topic-header{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:24px 28px;margin-bottom:24px;cursor:pointer;display:flex;align-items:center;gap:16px;
+    transition:all .2s;
+  }
+  .topic-header:hover{border-color:var(--accent2);background:var(--surface2);}
+  .topic-header.expanded{border-color:var(--accent);background:var(--surface2);}
+  .topic-icon{font-size:1.4rem;flex-shrink:0;}
+  .topic-header-text{flex:1;}
+  .topic-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;}
+  .topic-meta{font-size:.75rem;color:var(--muted);margin-top:4px;}
+  .topic-toggle{color:var(--muted);font-size:.8rem;margin-left:auto;flex-shrink:0;transition:transform .25s;}
+  .topic-header.expanded .topic-toggle{transform:rotate(180deg);color:var(--accent);}
+  .topic-body{display:none;animation:fadeIn .3s ease;}
+  .topic-body.open{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* CONTENT BLOCKS */
+  .theory{margin-bottom:28px;}
+  .theory p{color:var(--text);font-size:.95rem;line-height:1.85;margin-bottom:14px;}
+  .theory p:last-child{margin-bottom:0;}
+
+  h3.section-label{
+    font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;
+    color:var(--accent);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(201,168,76,.2);
+  }
+
+  .framework-box{
+    background:linear-gradient(135deg,var(--surface2),#1c1c28);
+    border:1px solid var(--border);border-left:3px solid var(--accent2);
+    border-radius:10px;padding:24px 28px;margin-bottom:24px;
+  }
+  .framework-box h4{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--accent2);margin-bottom:16px;}
+  .fw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:12px;}
+  .fw-item{background:rgba(255,255,255,.03);border-radius:8px;padding:14px 16px;border:1px solid var(--border);}
+  .fw-item strong{display:block;font-size:.8rem;color:var(--accent);margin-bottom:6px;letter-spacing:.5px;}
+  .fw-item span{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+  .callout{border-radius:10px;padding:18px 22px;margin-bottom:20px;font-size:.88rem;line-height:1.7;}
+  .callout-insight{background:rgba(78,205,196,.08);border:1px solid rgba(78,205,196,.25);border-left:3px solid var(--accent3);}
+  .callout-insight::before{content:'💡 INSIGHT  ';font-weight:700;color:var(--accent3);font-size:.75rem;letter-spacing:1px;display:block;margin-bottom:6px;}
+  .callout-quote{background:rgba(201,168,76,.07);border-left:3px solid var(--accent);padding-left:24px;font-style:italic;color:var(--muted);}
+  .callout-quote cite{font-style:normal;font-size:.75rem;display:block;margin-top:8px;color:var(--accent);font-weight:600;}
+  .callout-warning{background:rgba(224,123,123,.08);border:1px solid rgba(224,123,123,.2);border-left:3px solid var(--danger);}
+  .callout-warning::before{content:'⚠ NOTE  ';font-weight:700;color:var(--danger);font-size:.75rem;letter-spacing:1px;display:block;margin-bottom:6px;}
+  .callout-tip{background:rgba(123,224,160,.08);border:1px solid rgba(123,224,160,.2);border-left:3px solid var(--success);}
+  .callout-tip::before{content:'✦ TIP  ';font-weight:700;color:var(--success);font-size:.75rem;letter-spacing:1px;display:block;margin-bottom:6px;}
+
+  table.compare{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.85rem;}
+  table.compare th{background:var(--surface2);padding:10px 14px;text-align:left;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--accent);border-bottom:2px solid var(--border);}
+  table.compare td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+  table.compare tr:last-child td{border-bottom:none;}
+  table.compare tr:hover td{background:rgba(255,255,255,.02);}
+
+  .steps{counter-reset:step;margin-bottom:24px;}
+  .step-item{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start;}
+  .step-num{
+    counter-increment:step;width:30px;height:30px;border-radius:50%;background:var(--accent);
+    color:#000;font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;
+  }
+  .step-num::before{content:counter(step);}
+  .step-content strong{display:block;font-size:.9rem;margin-bottom:4px;}
+  .step-content span{font-size:.84rem;color:var(--muted);line-height:1.65;}
+
+  .info-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+  .info-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px;}
+  .info-card .card-icon{font-size:1.3rem;margin-bottom:10px;}
+  .info-card h5{font-size:.85rem;font-weight:600;margin-bottom:6px;}
+  .info-card p{font-size:.8rem;color:var(--muted);line-height:1.6;}
+
+  .exercise-box{
+    background:linear-gradient(135deg,rgba(123,111,224,.1),rgba(201,168,76,.07));
+    border:1px solid rgba(123,111,224,.3);border-radius:12px;padding:28px 32px;margin-top:28px;
+  }
+  .exercise-box h4{
+    font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--accent2);
+    margin-bottom:4px;display:flex;align-items:center;gap:8px;
+  }
+  .exercise-box h4::before{content:'✎';}
+  .exercise-box .ex-sub{font-size:.75rem;color:var(--muted);margin-bottom:16px;letter-spacing:.5px;}
+  .exercise-box ol{padding-left:20px;font-size:.88rem;line-height:1.8;color:var(--text);}
+  .exercise-box li{margin-bottom:8px;}
+
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .tag{font-size:.72rem;padding:4px 10px;border-radius:20px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+
+  .ladder{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
+  .rung{display:flex;align-items:center;gap:14px;padding:12px 18px;border:1px solid var(--border);background:var(--surface2);font-size:.85rem;position:relative;}
+  .rung:first-child{border-radius:10px 10px 0 0;}
+  .rung:last-child{border-radius:0 0 10px 10px;}
+  .rung:not(:last-child){border-bottom:none;}
+  .rung-level{width:26px;height:26px;border-radius:50%;background:var(--accent2);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rung strong{font-size:.82rem;}
+  .rung span{color:var(--muted);font-size:.8rem;}
+
+  /* BACK TO TOP / NAV */
+  .to-top{
+    display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);
+    cursor:pointer;margin-top:20px;padding:6px 12px;border:1px solid var(--border);border-radius:20px;
+    transition:all .2s;text-decoration:none;
+  }
+  .to-top:hover{color:var(--accent);border-color:var(--accent);}
+
+  /* DISTORTION LIST */
+  .distortion-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+  @media(max-width:700px){.distortion-grid{grid-template-columns:1fr;}}
+  .distortion-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+  .distortion-card .d-name{font-size:.82rem;font-weight:700;color:var(--accent);margin-bottom:6px;}
+  .distortion-card .d-def{font-size:.8rem;color:var(--muted);margin-bottom:8px;line-height:1.55;}
+  .distortion-card .d-fix{font-size:.78rem;color:var(--success);line-height:1.5;}
+  .distortion-card .d-fix::before{content:'Fix: ';font-weight:700;}
+
+  /* EXPOSE LADDER */
+  .expose-ladder{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
+  .expose-rung{
+    display:grid;grid-template-columns:40px 1fr 80px;align-items:center;gap:12px;
+    padding:12px 16px;border:1px solid var(--border);background:var(--surface2);font-size:.83rem;
+  }
+  .expose-rung:first-child{border-radius:10px 10px 0 0;border-top-color:rgba(224,123,123,.4);}
+  .expose-rung:last-child{border-radius:0 0 10px 10px;}
+  .expose-rung:not(:last-child){border-bottom:none;}
+  .fear-num{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--accent);}
+  .fear-badge{font-size:.7rem;padding:3px 8px;border-radius:20px;text-align:center;}
+  .low{background:rgba(123,224,160,.15);color:var(--success);}
+  .med{background:rgba(201,168,76,.15);color:var(--accent);}
+  .high{background:rgba(224,123,123,.15);color:var(--danger);}
+
+  /* TOP NAV */
+  .topnav{
+    position:sticky;top:0;z-index:100;background:rgba(14,14,17,.9);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);padding:10px 80px;display:flex;align-items:center;gap:16px;
+  }
+  .topnav-title{font-size:.8rem;font-weight:600;color:var(--muted);}
+  .topnav-breadcrumb{font-size:.75rem;color:var(--accent);margin-left:auto;font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">Personal Mastery</div>
+    <div class="sub">Academy · 10 Modules</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div id="moduleNav"></div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="topnav">
+    <span class="topnav-title">Personal Mastery Academy</span>
+    <span class="topnav-breadcrumb" id="breadcrumb">Select a topic →</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="hero-tag">Complete Self-Development Curriculum</div>
+    <h1>Master Your Mind,<br><em>Transform Your Life</em></h1>
+    <p>A comprehensive learning platform covering psychology, emotional intelligence, communication, habits, and purpose. Each lesson is built with research-backed theory, frameworks, and practical exercises.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">10</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-num">35+</div><div class="stat-label">Deep Topics</div></div>
+      <div class="stat"><div class="stat-num">35+</div><div class="stat-label">Exercises</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Growth</div></div>
+    </div>
+  </div>
+
+  <!-- ALL CONTENT -->
+  <div class="content-area" id="contentArea"></div>
+</div>
+
+<script>
+const MODULES = [
+  {
+    id:"m1", badge:"Module 01", title:"Mindset & Cognitive Foundations",
+    desc:"The architecture of thought — how beliefs shape reality",
+    icon:"🧠",
+    topics:[
+      {
+        id:"t1_1", icon:"🔭", name:"Growth vs Fixed Mindset",
+        meta:"Carol Dweck · Stanford Research · 15 min",
+        tags:["Neuroscience","Psychology","Dweck","Neuroplasticity"],
+        theory:`<p>Carol Dweck's landmark research at Stanford University identified two fundamental orientations people hold about their abilities. The <strong>fixed mindset</strong> treats intelligence and talent as static, innate quantities — you either have them or you don't. The <strong>growth mindset</strong> understands that abilities are cultivable through dedication, strategy, and persistent effort.</p>
+<p>Neurologically, mindset affects how the brain responds to challenge. Fixed-mindset individuals show a neural "avoidance" pattern when encountering errors — the brain essentially shuts down learning. Growth-mindset individuals show heightened activity in the error-monitoring regions, treating mistakes as information rather than verdict.</p>
+<p>The implications are profound: how you praise children (and yourself) shapes which mindset dominates. "You're so smart" anchors identity to a fixed trait. "You worked so hard on that" anchors identity to process — the engine of growth.</p>`,
+        framework:{title:"The Two Mindsets Compared",items:[
+          {k:"Challenge",fixed:"Avoided — threatens identity",growth:"Embraced — opportunity to grow"},
+          {k:"Obstacles",fixed:"Give up early",growth:"Persist through"},
+          {k:"Effort",fixed:"Seen as fruitless if you're 'not talented'",growth:"The path to mastery"},
+          {k:"Criticism",fixed:"Ignored or taken personally",growth:"Useful feedback to learn from"},
+          {k:"Others' Success",fixed:"Threatening, leads to envy",growth:"Inspiring, lessons to learn"},
+        ],type:"table"},
+        insight:"Dweck found that praising children for effort rather than intelligence produced measurably higher resilience and academic achievement within 6 weeks.",
+        quote:{text:"The view you adopt for yourself profoundly affects the way you lead your life.",author:"Carol Dweck, Mindset (2006)"},
+        steps:[
+          {t:"Mindset Audit",d:"List 5 areas where you say 'I'm just not good at X.' These are fixed-mindset beliefs in disguise."},
+          {t:"Reframe with 'Yet'",d:"Add the word 'yet' to every limiting statement. 'I can't do this' becomes 'I can't do this yet.'"},
+          {t:"Praise the Process",d:"For one week, notice when you praise yourself or others. Shift all praise toward effort, strategy, and persistence."},
+          {t:"Failure Journal",d:"After any setback, write: What happened? What did I learn? What will I try differently?"},
+        ],
+        exercise:{title:"The Growth Mindset Interview",sub:"30 minutes · Reflective journaling",steps:["Identify one area of life where you hold a fixed belief about yourself (e.g., 'I'm bad at relationships / math / public speaking').","Write for 5 minutes: What evidence do you have that this is true? Where did this belief come from?","Now write for 5 minutes: What evidence contradicts this belief? What moments show potential for growth?","Design one small experiment this week that tests your growth in this area — something slightly outside your comfort zone.","Plan how you'll reflect on the experiment. Schedule a 10-minute journal session 7 days from now."]}
+      },
+      {
+        id:"t1_2", icon:"💭", name:"Cognitive Distortions — All 10 Types",
+        meta:"Aaron Beck · CBT · 20 min",
+        tags:["CBT","Beck","Cognitive Therapy","Negative Thinking"],
+        theory:`<p>Cognitive distortions are systematic errors in thinking first catalogued by psychiatrist Aaron Beck in the 1960s as he developed Cognitive Behavioral Therapy. These are not random negative thoughts — they are predictable patterns of irrational thinking that distort our perception of reality and drive emotional distress.</p>
+<p>The key insight: thoughts are not facts. A thought is a hypothesis about reality, and like any hypothesis, it can be tested. CBT teaches us to identify the distortion, examine the evidence, and construct a more balanced, realistic thought.</p>
+<p>Most people habitually use 3–4 distortions. Identifying your personal patterns is the foundation of cognitive health.</p>`,
+        distortions:[
+          {name:"All-or-Nothing Thinking",def:"Seeing things in black and white, no middle ground.",fix:"Ask: Is there a spectrum here? What's the percentage, not the verdict?"},
+          {name:"Overgeneralization",def:"One negative event becomes a never-ending pattern ('I always fail').",fix:"Replace 'always/never' with 'sometimes/this time'."},
+          {name:"Mental Filter",def:"Focusing exclusively on one negative detail while ignoring the whole.",fix:"List 3 positive aspects of the same situation."},
+          {name:"Disqualifying the Positive",def:"Rejecting positive experiences by saying 'that doesn't count'.",fix:"Accept compliments and wins as real data."},
+          {name:"Mind Reading",def:"Assuming you know what others are thinking (usually negative).",fix:"Ask yourself: Do I have actual evidence? Have I asked them?"},
+          {name:"Fortune Telling",def:"Predicting negative outcomes as certain facts.",fix:"Rate the actual probability. Imagine the best case too."},
+          {name:"Catastrophizing",def:"Blowing things out of proportion ('This is the worst possible thing').",fix:"Ask: What's the realistic worst case? Could I handle it?"},
+          {name:"Emotional Reasoning",def:"Believing something is true because it feels true ('I feel stupid, so I am stupid').",fix:"Feelings are data, not facts. What does evidence say?"},
+          {name:"Should Statements",def:"Rigid rules about how you or others must behave, leading to guilt or anger.",fix:"Replace 'should' with 'could' or 'it would be helpful if'."},
+          {name:"Personalization",def:"Blaming yourself for events outside your control.",fix:"List all contributing factors. What's your actual % responsibility?"},
+        ],
+        exercise:{title:"The Thought Record",sub:"15 minutes daily · CBT technique",steps:["Set a notification for 9 PM each evening.","In a notebook, write today's most upsetting thought or belief.","Identify which of the 10 distortions it contains.","Rate your belief in the thought: 0–100%.","Write the evidence FOR this thought (stick to facts, not feelings).","Write the evidence AGAINST this thought.","Write a balanced, realistic alternative thought.","Re-rate your belief in the original thought. Notice the shift."]}
+      },
+      {
+        id:"t1_3", icon:"🏛️", name:"Stoicism — 4 Core Practices",
+        meta:"Marcus Aurelius · Epictetus · Seneca · 18 min",
+        tags:["Stoicism","Philosophy","Resilience","Marcus Aurelius"],
+        theory:`<p>Stoicism is a philosophy founded in Athens around 300 BCE and developed to its greatest height by Roman thinkers Marcus Aurelius, Epictetus, and Seneca. Unlike academic philosophy, Stoicism was always designed as a practical toolkit for living well under any conditions.</p>
+<p>The central Stoic insight is what modern psychology calls the <strong>cognitive model</strong>: it is not events that disturb us, but our judgments about events. This is remarkably prescient — Epictetus's <em>Enchiridion</em> was written nearly 2,000 years before CBT, yet describes the same mechanism.</p>
+<p>Modern research has confirmed Stoic practices. Negative visualization (premeditatio malorum) reduces hedonic adaptation. The dichotomy of control reduces anxiety. Voluntary discomfort builds resilience. These are not just philosophical ideas — they are psychologically validated techniques.</p>`,
+        framework:{title:"The 4 Stoic Practices",items:[
+          {k:"Dichotomy of Control",v:"Distinguish what is 'up to us' (judgments, desires, actions) from what is not (weather, others' actions, outcomes). Focus exclusively on the former."},
+          {k:"Negative Visualization",v:"Briefly imagine losing what you value — relationships, health, work. This combats hedonic adaptation and cultivates gratitude."},
+          {k:"View from Above",v:"Mentally zoom out to see your problem from a city, country, planet, cosmic scale. Reduces the felt importance of minor disturbances."},
+          {k:"Voluntary Discomfort",v:"Periodically choose discomfort (cold showers, fasting, basic living) to prove to yourself that you can handle hardship."},
+        ],type:"fw"},
+        quote:{text:"You have power over your mind — not outside events. Realize this, and you will find strength.",author:"Marcus Aurelius, Meditations"},
+        tip:"The Stoics practiced a morning ritual: anticipate challenges of the day, decide your response in advance. This is identical to 'implementation intentions' in modern psychology — one of the most evidence-based behavior change tools.",
+        exercise:{title:"The Stoic Daily Practice",sub:"10 minutes AM + 5 minutes PM",steps:["Morning (5 min): Write 3 potential challenges today. For each: Is it in my control? If not, what IS in my control about it?","Morning (5 min): Choose one thing to practice negative visualization on — imagine it gone. Let gratitude arise naturally.","Evening (5 min): Ask Marcus Aurelius's nightly question: 'What did I do well today? Where did I fall short? How can I improve tomorrow?'","Weekly: Choose one voluntary discomfort (cold shower, skip a meal, sleep without a pillow). Observe your reaction to it.","Journal any insights about the dichotomy of control throughout the week."]}
+      },
+    ]
+  },
+  {
+    id:"m2", badge:"Module 02", title:"Emotional Intelligence",
+    desc:"Mastering the inner landscape — the 5 domains of EQ",
+    icon:"❤️",
+    topics:[
+      {
+        id:"t2_1", icon:"🎭", name:"The 5 Domains of EQ",
+        meta:"Daniel Goleman · 1995 · 15 min",
+        tags:["Goleman","EQ","Emotional Intelligence","Self-Awareness"],
+        theory:`<p>Daniel Goleman's 1995 book <em>Emotional Intelligence</em> synthesized research showing that EQ (emotional quotient) predicts success in life and work better than IQ in most domains. Goleman identified 5 interlocking competencies that together form emotional mastery.</p>
+<p>Goleman drew on neuroscientist Joseph LeDoux's work on the amygdala — the brain's threat-detection center. When we're emotionally hijacked (what Goleman called an "amygdala hijack"), the prefrontal cortex — our rational thinking center — effectively goes offline. EQ training strengthens the neural pathways that keep the prefrontal cortex engaged under stress.</p>`,
+        framework:{title:"Goleman's 5 EQ Domains",items:[
+          {k:"Self-Awareness",v:"The ability to recognize your emotions as they arise, understand your triggers, and know your strengths and limits."},
+          {k:"Self-Regulation",v:"The capacity to manage disruptive impulses and moods, think before acting, and adapt to change with equanimity."},
+          {k:"Motivation",v:"A drive to achieve beyond external rewards — intrinsic motivation, resilience in the face of failure, optimism."},
+          {k:"Empathy",v:"The ability to understand others' emotional states, read nonverbal cues, and respond to unspoken needs."},
+          {k:"Social Skills",v:"Competence in managing relationships, building networks, finding common ground, and building rapport."},
+        ],type:"fw"},
+        insight:"Research by the Center for Creative Leadership found that the primary causes of executive failure are emotional incompetencies — inability to handle interpersonal problems, unsatisfactory leadership during transitions, and failure to inspire trust.",
+        exercise:{title:"EQ Domain Mapping",sub:"20 minutes · Self-assessment",steps:["Rate yourself 1-10 on each of the 5 EQ domains.",
+        "For your lowest domain: write 3 specific situations where it showed up as a weakness.",
+        "For each situation: what emotion were you feeling? What did you do? What was the impact?",
+        "Design one practice this week to develop your lowest domain (e.g., for self-awareness: body scan meditation twice daily).","Track any changes in your responses to similar situations."]}
+      },
+      {
+        id:"t2_2", icon:"🌧️", name:"Emotional Regulation — RAIN Technique",
+        meta:"Tara Brach · Mindfulness · 12 min",
+        tags:["RAIN","Mindfulness","Regulation","Tara Brach"],
+        theory:`<p>Emotional regulation is not emotional suppression. Suppression — pushing feelings down — is consistently linked to worse physical health outcomes, poorer decision-making, and relationship damage. True regulation means processing emotions so they move through you rather than controlling you.</p>
+<p>The RAIN technique, developed by mindfulness teacher Michele McDonald and popularized by Tara Brach, is one of the most practically effective tools for emotional regulation. It mirrors the process neuroscientist Dan Siegel calls "name it to tame it" — the act of labeling an emotion activates the prefrontal cortex and reduces amygdala reactivity.</p>
+<p>Neuroimaging studies by UCLA's Matthew Lieberman showed that affect labeling (putting feelings into words) significantly reduces emotional activation in the brain — even when the words are just thought, not spoken.</p>`,
+        framework:{title:"The RAIN Framework",items:[
+          {k:"R — Recognize",v:"Name what you're feeling without judgment. 'There is anxiety.' 'There is anger.' The naming itself creates distance from the emotion."},
+          {k:"A — Allow",v:"Let the feeling be present without trying to fix, suppress, or escape it. Resistance amplifies; allowance lets emotions move."},
+          {k:"I — Investigate",v:"Get curious. Where do you feel this in your body? What belief or fear is underneath this feeling? What does it need?"},
+          {k:"N — Nurture",v:"Offer yourself what you would offer a dear friend in pain — compassion, warmth, understanding. Self-compassion is not self-pity; it's the antidote to shame."},
+        ],type:"fw"},
+        tip:"The pause between stimulus and response is the space of emotional intelligence. Viktor Frankl called it the last human freedom. Practice extending that pause by one second at a time.",
+        exercise:{title:"RAIN in Real Time",sub:"5–10 minutes · During or after emotional event",steps:["When you notice a strong emotion (anxiety, anger, shame, envy), stop.",
+        "Set a 5-minute timer and sit quietly.",
+        "R: Name the emotion. 'There is ___.' Be specific — not just 'bad' but 'humiliated' or 'anxious about being judged.'",
+        "A: Say to yourself 'This is allowed. It's okay to feel this right now.'",
+        "I: Scan your body — where is this emotion physically? What triggered it? What does it believe about you or the situation?",
+        "N: Place your hand on your heart and say 'This is a moment of suffering. Suffering is part of life. May I be kind to myself right now.'",
+        "Journal: What did you discover during the Investigation step?"]}
+      },
+      {
+        id:"t2_3", icon:"🔥", name:"Managing Anger & Emotional Hijacking",
+        meta:"Goleman · LeDoux · Neuroscience · 14 min",
+        tags:["Anger","Amygdala","Neuroscience","Self-Control"],
+        theory:`<p>The amygdala is the brain's alarm system — it evolved to detect threat and trigger the fight-flight-freeze response in milliseconds. The problem is that it can't distinguish between a predator and an angry email. When the amygdala fires strongly enough, it literally bypasses the prefrontal cortex, producing what Goleman called an <strong>amygdala hijack</strong>: intense emotion, impaired judgment, and behavior you later regret.</p>
+<p>Once triggered, cortisol and adrenaline stay in the bloodstream for 20 minutes to several hours. This is why "sleeping on it" works — biology needs time to reset. Techniques that engage the parasympathetic nervous system (breathing, cold water, physical movement) accelerate this process.</p>
+<p>The goal is not to eliminate anger — anger is information, often signaling a violated boundary or injustice. The goal is to process it skillfully rather than let it process you.</p>`,
+        warning:"Expressing anger (venting) does NOT reduce it — research by Brad Bushman shows it actually amplifies aggression. Processing anger (understanding and communicating it calmly) is the effective path.",
+        steps:[
+          {t:"Recognize the hijack",d:"Physical signals: jaw clenching, heat in the chest or face, tunnel vision, racing heart. These are amygdala activation signals."},
+          {t:"Physiological reset",d:"Slow extended exhale (4 in, 6 out) triggers the vagus nerve and activates the parasympathetic system. Do 5 cycles."},
+          {t:"The 24-hour rule",d:"For significant anger, commit to not responding (especially in writing/text) for 24 hours. Biology needs to reset."},
+          {t:"Process, don't vent",d:"Describe your anger to yourself or a journal: what happened, what you felt, what need was unmet. This is processing."},
+          {t:"Communicate from needs",d:"After resetting, express the unmet need, not the anger: 'I felt dismissed when... and I need to feel heard.'"},
+        ],
+        exercise:{title:"Anger Archaeology",sub:"15 minutes · Retrospective analysis",steps:["Recall your last anger episode — even if minor.",
+        "Write: What was the trigger? What interpretation did I make about it?",
+        "What need was unmet? (Respect, fairness, safety, autonomy, connection?)",
+        "What did I do with the anger? Was it effective?",
+        "How would I ideally handle the same situation now?",
+        "Identify your earliest physical warning sign — the signal before the hijack. This is your intervention point."]}
+      }
+    ]
+  },
+  {
+    id:"m3", badge:"Module 03", title:"Communication Mastery",
+    desc:"Verbal, non-verbal, and the art of deep connection",
+    icon:"💬",
+    topics:[
+      {
+        id:"t3_1", icon:"🗣️", name:"Verbal & Non-Verbal Mastery",
+        meta:"Mehrabian · Cialdini · Communication Science · 18 min",
+        tags:["Body Language","Communication","Mehrabian","Influence"],
+        theory:`<p>Albert Mehrabian's research at UCLA found that in emotional communication, <strong>55% of impact comes from body language</strong>, 38% from tone of voice, and only 7% from the words themselves. While this finding is often over-generalized, the principle holds: how you say something matters enormously.</p>
+<p>Nonverbal communication is processed by older, faster brain regions (limbic system) before verbal content reaches conscious awareness. Your listener has an emotional read on you before they've parsed a single word. This is why you can "feel" when someone is insincere even if their words are technically correct.</p>
+<p>Verbal mastery means choosing words with precision and intention — leveraging the power of specificity, metaphor, and narrative. The brain processes narrative (story form) far more deeply than list-form information, activating sensory and motor cortices as if experiencing the story directly.</p>`,
+        framework:{title:"Communication Dimensions",items:[
+          {k:"Posture & Open Body",v:"Open posture (uncrossed arms, forward lean) signals engagement and warmth. The listener reads safety before content."},
+          {k:"Eye Contact",v:"Aim for 60-70% eye contact. Too little signals anxiety/dishonesty; too much becomes threatening. Natural breaks are fine."},
+          {k:"Voice Prosody",v:"Vary pace, pitch, and volume. Monotone loses attention within seconds. Strategic pauses create emphasis and gravity."},
+          {k:"Mirroring",v:"Subtle mirroring of posture and vocabulary builds unconscious rapport and trust (documented in social psychology research)."},
+          {k:"Specificity in Words",v:"'I feel overlooked when meetings start without me' is infinitely more impactful than 'You always ignore me.'"},
+          {k:"Storytelling Structure",v:"Open with context → introduce tension/conflict → reveal the resolution/insight. Stories transfer understanding more efficiently than facts."},
+        ],type:"fw"},
+        exercise:{title:"The Observation Field Exercise",sub:"One week · Daily micro-practice",steps:["Choose one conversation per day to observe with full attention.",
+        "Before: Set an intention — 'Today I will notice body language alignment vs. words.'",
+        "During: Notice: Are their words, tone, and body language congruent?",
+        "Notice your own body — are you open, leaning in, making natural eye contact?",
+        "After: Write 3 observations in your phone. What nonverbal signals did you miss initially?",
+        "By Friday: what patterns have you noticed in how you communicate vs. how you'd like to?"]}
+      },
+      {
+        id:"t3_2", icon:"💙", name:"Non-Violent Communication (NVC)",
+        meta:"Marshall Rosenberg · NVC Framework · 20 min",
+        tags:["NVC","Rosenberg","Conflict","Empathy","Needs"],
+        theory:`<p>Marshall Rosenberg developed Nonviolent Communication (NVC) while working as a psychologist in the 1960s, primarily in desegregation settings where communication across deep division was essential. NVC is a framework for communicating in a way that preserves connection even during conflict.</p>
+<p>The core premise: all human behavior is an attempt to meet universal human needs. Conflict arises not from incompatible needs (which are almost always compatible) but from incompatible <em>strategies</em> for meeting those needs. When we skip to strategy-level demands, we trigger defensiveness. When we speak from the needs level, we create understanding.</p>
+<p>Rosenberg's research showed that "violent" communication — evaluation, judgment, demand, and diagnosis — is so normalized that most people cannot initially identify it in their own speech.</p>`,
+        framework:{title:"The NVC Four-Step Model (OFNR)",items:[
+          {k:"Observations",v:"State facts, not evaluations. 'You were 20 minutes late' vs. 'You're always irresponsible.' One is observable; the other is judgment."},
+          {k:"Feelings",v:"Express genuine feelings, not interpretations disguised as feelings. 'I feel abandoned' is an interpretation. 'I feel hurt and lonely' is a feeling."},
+          {k:"Needs",v:"Identify the universal need underneath the feeling. Needs: connection, safety, autonomy, respect, understanding, contribution, fairness."},
+          {k:"Requests",v:"Make a specific, positive, doable request — not a demand. 'Would you be willing to text me if you'll be late?' A request can be declined; a demand cannot."},
+        ],type:"fw"},
+        tip:"The difference between a request and a demand is not the words — it's what happens when someone says no. If you react with punishment or guilt-tripping, it was a demand.",
+        insight:"NVC distinguishes 'empathy' (being with someone's experience) from 'sympathy' (feeling sorry for them) and 'advice' (solving their problem). Empathy is what most people actually need in difficult moments — and what they rarely receive.",
+        exercise:{title:"NVC Translation Practice",sub:"20 minutes · Writing exercise",steps:["Write down a complaint, criticism, or demand you've recently made or thought.",
+        "Translate it through the 4 steps: Observation (fact-only, no evaluation), Feeling (authentic emotion word), Need (universal need underneath), Request (specific, positive, doable).",
+        "Example: 'You never listen to me' → O: 'In our last 3 conversations, you checked your phone while I was speaking.' F: 'I feel deflated and disconnected.' N: 'I need to feel that what I share matters to you.' R: 'Would you be willing to put your phone face-down during our conversations this week?'",
+        "Practice this translation on 3 different complaints.",
+        "Choose one to actually deliver this week using the NVC structure."]}
+      },
+      {
+        id:"t3_3", icon:"🗡️", name:"Assertiveness & Conflict Resolution",
+        meta:"Communication Psychology · 16 min",
+        tags:["Assertiveness","Conflict","Boundaries","Communication"],
+        theory:`<p>There are four communication styles: <strong>passive</strong> (suppressing your needs), <strong>aggressive</strong> (imposing your needs at others' expense), <strong>passive-aggressive</strong> (indirect aggression), and <strong>assertive</strong> (expressing your needs clearly while respecting others').</p>
+<p>Most people in conflict oscillate between passive and aggressive, never finding the assertive middle. Assertiveness is not rudeness — it is clarity combined with respect. Research consistently shows that assertive individuals experience higher self-esteem, better relationships, less anxiety, and greater career advancement.</p>
+<p>Conflict, when handled well, deepens relationships rather than damaging them. Gottman's research shows it's not the presence of conflict but the <em>ratio</em> of positive to negative interactions and the <em>repair attempts</em> during conflict that predict relationship health.</p>`,
+        framework:{title:"The DESC Assertiveness Script",items:[
+          {k:"D — Describe",v:"Describe the specific behavior factually, without evaluation. 'When the report was submitted without the analysis section...'"},
+          {k:"E — Express",v:"State your feelings using I-statements. '...I felt unprepared for the client meeting...'"},
+          {k:"S — Specify",v:"Make a specific request for change. '...I'd like us to agree on a checklist for report components...'"},
+          {k:"C — Consequences",v:"State the positive consequence of change (not a threat). '...so we can both walk into presentations feeling confident.'"},
+        ],type:"fw"},
+        exercise:{title:"The Assertiveness Rehearsal",sub:"15 minutes · Role-play practice",steps:["Identify one situation where you've been passive (not saying what you need) OR aggressive (saying it too harshly).",
+        "Write out the DESC script for this situation.",
+        "Read it aloud — alone first. Notice your voice, posture, hesitations.",
+        "If possible, role-play with a trusted friend, asking them to respond realistically.",
+        "Debrief: What felt hardest? Where did you slip into passivity or aggression?",
+        "Commit to using this script in the actual situation within 72 hours."]}
+      }
+    ]
+  },
+  {
+    id:"m4", badge:"Module 04", title:"Social Intelligence & Relationships",
+    desc:"The science of connection, influence, and belonging",
+    icon:"🤝",
+    topics:[
+      {
+        id:"t4_1", icon:"😰", name:"Social Anxiety — Graduated Exposure",
+        meta:"CBT · Exposure Therapy · 18 min",
+        tags:["Social Anxiety","CBT","Exposure","Fear Ladder"],
+        theory:`<p>Social anxiety is among the most common anxiety disorders, affecting roughly 12% of people at clinical levels — and many more subclinically. It is characterized by intense fear of negative evaluation, leading to avoidance of social situations and, as a result, reinforcement of the fear. The core cognitive distortions in social anxiety are: <em>the spotlight effect</em> (believing others notice and care about your flaws far more than they do) and <em>post-event processing</em> (replaying perceived failures in excruciating detail after social events).</p>
+<p>The most evidence-based treatment is Exposure and Response Prevention (ERP). The mechanism: avoidance maintains anxiety; confronting the feared situation (without safety behaviors) allows the amygdala to update its threat assessment. The exposure must be gradual — too fast is traumatizing, too slow maintains avoidance.</p>`,
+        ladder:[
+          {level:1,item:"Text a friend first — initiate contact",fear:"Low"},
+          {level:2,item:"Join an online group discussion and post one comment",fear:"Low"},
+          {level:3,item:"Call someone you know casually on the phone",fear:"Low"},
+          {level:4,item:"Attend a small event with one friend present",fear:"Med"},
+          {level:5,item:"Introduce yourself to one new person at an event",fear:"Med"},
+          {level:6,item:"Ask for directions or help from a stranger",fear:"Med"},
+          {level:7,item:"Attend a social event alone",fear:"Med"},
+          {level:8,item:"Speak up in a group discussion or meeting",fear:"High"},
+          {level:9,item:"Give a short prepared presentation to a small group",fear:"High"},
+          {level:10,item:"Attend a networking event and have 3+ conversations",fear:"High"},
+        ],
+        warning:"Safety behaviors (only going to events with a specific person, always having your phone to check, rehearsing everything in advance) maintain anxiety. Gradually reduce them as you climb the ladder.",
+        exercise:{title:"Build Your Personal Fear Ladder",sub:"20 minutes + ongoing practice",steps:["List 10 social situations that cause you anxiety, from mildly uncomfortable to highly distressing.",
+        "Rate each 0-100 (SUD = Subjective Units of Distress).",
+        "Arrange them in order. This is your personalized exposure ladder.",
+        "Start with the lowest-rated item. Schedule it this week. Do it without safety behaviors.",
+        "After each exposure: rate your anxiety before, during peak, and after. Notice: did it peak and come down?",
+        "Move up the ladder only after each rung becomes 30 or below.",
+        "Track your ladder in a notebook with dates and anxiety ratings."]}
+      },
+      {
+        id:"t4_2", icon:"💞", name:"Gottman's Four Horsemen & Relationship Health",
+        meta:"John Gottman · 40 Years Research · 16 min",
+        tags:["Gottman","Relationships","Conflict","Love Lab"],
+        theory:`<p>John Gottman spent 40 years at his "Love Lab" at the University of Washington studying couples in extraordinary detail — tracking physiological responses, micro-expressions, and conversation patterns. His findings are among the most empirically validated in all of social science. He can predict divorce with 93.6% accuracy from a 15-minute conversation.</p>
+<p>His central finding: healthy relationships are not conflict-free. What distinguishes stable from unstable relationships is the <strong>5:1 positivity ratio</strong> (five positive interactions for every negative one during conflict) and the ability to make and accept <em>repair attempts</em> — small gestures that signal "let's not let this damage us."</p>
+<p>The four communication patterns that predict relationship failure — the Four Horsemen — are predictable, common, and replaceable with specific antidotes.</p>`,
+        framework:{title:"The Four Horsemen + Antidotes",items:[
+          {k:"Criticism → Antidote: Complaint",v:"Criticism attacks character ('You're so selfish'). Complaint addresses behavior ('I feel hurt when plans change last minute and I need more notice')."},
+          {k:"Contempt → Antidote: Appreciation",v:"Contempt (eye-rolling, mockery, disrespect) is the single greatest predictor of divorce. Antidote: Build a culture of appreciation and genuine admiration."},
+          {k:"Defensiveness → Antidote: Responsibility",v:"Defensiveness is counter-attacking or victim-playing. Antidote: find even a kernel of truth in the other's complaint and acknowledge it."},
+          {k:"Stonewalling → Antidote: Physiological Soothing",v:"Stonewalling (shutting down, going silent) occurs when flooded. Antidote: Take a 20-minute break (minimum) to physiologically reset."},
+        ],type:"fw"},
+        exercise:{title:"The Gottman Check-In",sub:"Weekly · 20 minutes with partner/friend",steps:["Sit together weekly for a structured check-in.",
+        "Each person answers: What's one thing I appreciated about you this week?",
+        "Each person shares one thing that's been stressful (NOT about the relationship) — the other just listens, no advice.",
+        "Each person shares one thing that would make next week better (specific, positive request).",
+        "Review: Did any Four Horsemen appear this week? How did you repair?",
+        "Close with something physical and positive: a hug, a compliment, a moment of laughter."]}
+      }
+    ]
+  },
+  {
+    id:"m5", badge:"Module 05", title:"Habits & Behavior Change",
+    desc:"The science of building systems that make success automatic",
+    icon:"⚙️",
+    topics:[
+      {
+        id:"t5_1", icon:"🔄", name:"The Habit Loop — Cue, Routine, Reward",
+        meta:"Charles Duhigg · James Clear · 15 min",
+        tags:["Habits","Duhigg","Atomic Habits","Behavior","Loop"],
+        theory:`<p>MIT researchers in the 1990s discovered that habit formation is driven by a neurological loop stored in the basal ganglia — a region that operates beneath conscious awareness. Charles Duhigg popularized this as the <strong>Habit Loop</strong>: Cue → Routine → Reward.</p>
+<p>The cue triggers an automatic behavior; the routine is the behavior itself; the reward is what the brain uses to decide whether to store this loop for future automatic retrieval. With enough repetition, the loop becomes a "chunked" automatic behavior — executed with almost no cognitive load.</p>
+<p>James Clear's <em>Atomic Habits</em> (2018) extended this into a four-step model and practical framework. His key insight: you don't rise to the level of your goals, you fall to the level of your systems. Identity-based habits — changing who you are rather than what you do — are the most durable.</p>`,
+        framework:{title:"Clear's Four Laws of Behavior Change",items:[
+          {k:"Make It Obvious (Cue)",v:"Design your environment so the cue for your desired habit is visible and prominent. Habit stacking: 'After I [current habit], I will [new habit].'"},
+          {k:"Make It Attractive (Craving)",v:"Bundle habits with things you enjoy. Use temptation bundling: only listen to your favorite podcast while exercising."},
+          {k:"Make It Easy (Response)",v:"Reduce friction. Prepare your gym clothes the night before. Use the 2-minute rule: scale any habit down to a 2-minute version to start."},
+          {k:"Make It Satisfying (Reward)",v:"Provide immediate satisfaction. Track your habit on a calendar ('Don't break the chain'). Celebrate micro-wins immediately."},
+        ],type:"fw"},
+        insight:"Clear's identity reframe: Instead of 'I want to run a marathon,' ask 'What would a healthy person do?' Each workout is a vote for the identity of a healthy person. Habits are how you prove your identity to yourself.",
+        exercise:{title:"Habit Architecture Design",sub:"30 minutes · Planning session",steps:["Choose one habit you want to build.",
+        "Design using the four laws:",
+        "  OBVIOUS: Where will you do it? When exactly? What existing habit will you stack it after?",
+        "  ATTRACTIVE: What enjoyable thing can you bundle with it?",
+        "  EASY: What's the smallest possible version (2-minute rule)? Remove all friction.",
+        "  SATISFYING: How will you track it? What immediate reward will you give yourself?",
+        "Set up your environment today for tomorrow's first attempt.",
+        "Track for 30 days. Miss once? Fine. Never miss twice."]}
+      },
+      {
+        id:"t5_2", icon:"🌅", name:"The Morning Routine — Science & Design",
+        meta:"Neuroscience · Cortisol · Circadian Rhythm · 14 min",
+        tags:["Morning Routine","Cortisol","Circadian","Productivity"],
+        theory:`<p>The first 90 minutes after waking are neurologically unique. Cortisol levels peak during the <strong>Cortisol Awakening Response</strong> (CAR) — a natural surge that primes alertness, focus, and mood regulation. Using this window for cognitively demanding work, exercise, or learning is backed by circadian biology.</p>
+<p>What you do in the first hour also sets your neural baseline for the day. Immediately checking your phone puts your brain in reactive mode — processing others' agendas, social comparison, and anxiety-provoking news — before you've had a moment to set your own.</p>
+<p>Hal Elrod's SAVERS framework, Andrew Huberman's morning protocol, and Robin Sharma's 5AM Club all point to the same research: mornings characterized by silence, movement, learning, and intention-setting correlate strongly with higher performance and wellbeing.</p>`,
+        steps:[
+          {t:"No phone for 30 min",d:"Protect your first waking moments from reactive mode. Your cortisol peak is for YOUR priorities, not notifications."},
+          {t:"Hydration",d:"Drink 500ml water before coffee. You're 8+ hours dehydrated; even mild dehydration impairs cognition measurably."},
+          {t:"Movement",d:"10-20 minutes of physical activity — even a walk — spikes BDNF (brain-derived neurotrophic factor), the primary driver of learning and neuroplasticity."},
+          {t:"Light exposure",d:"Get outside or open bright lights within 30 minutes of waking. This anchors your circadian rhythm and improves sleep that night."},
+          {t:"Intention setting",d:"3-5 minutes of journaling or reflection: What is most important today? What kind of person do I want to be today?"},
+          {t:"Focus block",d:"Use the cortisol peak for your highest-priority cognitive work, before email, meetings, or reactive tasks."},
+        ],
+        exercise:{title:"Morning Routine Design Sprint",sub:"Design + 1-week test",steps:["Map your current first 60 minutes in detail — what do you actually do?",
+        "Rate it: Does it energize or drain you? Does it set your agenda or reactive mode?",
+        "Design your ideal 60-minute morning using the steps above.",
+        "Remove one thing from your current morning to make space.",
+        "Test for 7 consecutive days (yes, including weekends to see if the desire is genuine).",
+        "At day 7: what's working? What feels forced? Refine and continue."]}
+      },
+      {
+        id:"t5_3", icon:"⚡", name:"Willpower Science & Energy Management",
+        meta:"Roy Baumeister · Decision Fatigue · 14 min",
+        tags:["Willpower","Decision Fatigue","Energy","Baumeister"],
+        theory:`<p>Roy Baumeister's landmark research introduced the concept of <strong>ego depletion</strong>: willpower is a finite resource that drains across the day with each decision, act of self-control, and cognitive task. Judges give harsher sentences before lunch. Shoppers make worse food choices in the evening. Surgeons make more errors late in the day.</p>
+<p>However, more recent research (particularly by Veronika Job) suggests willpower depletion is partly a belief — people who believe willpower is unlimited show less depletion. The practical truth likely lies between: willpower has real biological limits (glucose, cortisol, sleep), AND your beliefs about it matter significantly.</p>
+<p>The most successful people don't use more willpower — they reduce the need for it through habits, environments, and decision elimination.</p>`,
+        framework:{title:"Energy Management Strategies",items:[
+          {k:"Decision Elimination",v:"Standardize low-stakes decisions (meals, clothing, routines) to preserve cognitive resources for high-stakes choices."},
+          {k:"Strategic Timing",v:"Schedule difficult tasks (creative work, hard conversations, learning) during your peak energy window (usually morning for most chronotypes)."},
+          {k:"Environment Design",v:"Remove temptations from your environment — you can't eat what's not there. Change your surroundings to reduce reliance on willpower."},
+          {k:"Restore, Don't Just Rest",v:"True restoration: sleep (non-negotiable), nature exposure, flow states, social connection, and genuine leisure — not scrolling."},
+        ],type:"fw"},
+        exercise:{title:"Decision Audit & Elimination",sub:"45 minutes · One-time redesign",steps:["List every decision you make before noon tomorrow. Count them.",
+        "Categorize: High-stakes (career, health, relationships) vs. Low-stakes (what to eat, what to wear, what to reply to).",
+        "For each low-stakes decision: can you automate, schedule, or eliminate it?",
+        "Design a default: same breakfast M-F, clothes picked night before, email only twice daily.",
+        "Move your hardest work to your peak energy window.",
+        "Track your cognitive energy levels (1-10) every 2 hours for 5 days."]}
+      }
+    ]
+  },
+  {
+    id:"m6", badge:"Module 06", title:"Purpose, Values & Goal-Setting",
+    desc:"Finding your north star and building toward it with precision",
+    icon:"🎯",
+    topics:[
+      {
+        id:"t6_1", icon:"🌸", name:"Ikigai — Finding Your Reason for Being",
+        meta:"Japanese Philosophy · Purpose · 18 min",
+        tags:["Ikigai","Purpose","Values","Japan","Meaning"],
+        theory:`<p>Ikigai (生き甲斐) is a Japanese concept meaning "reason for being" — the thing that makes you want to get up in the morning. The word combines <em>iki</em> (life) and <em>gai</em> (worth or value). While the concept is ancient in Japanese culture, the Venn diagram framework commonly associated with it was popularized in the West by Héctor García and Francesc Miralles in their book <em>Ikigai</em> (2016).</p>
+<p>Research on purpose and meaning in life — studied extensively by psychologists Victor Frankl, Martin Seligman, and Angela Duckworth — shows that purpose is one of the most powerful predictors of longevity, wellbeing, resilience, and performance. In Okinawa, Japan — a Blue Zone with among the world's highest centenarian rates — ikigai is cited as a key factor in long, healthy lives.</p>
+<p>Duckworth's work on "grit" shows that purpose (caring about the impact on others beyond yourself) is what sustains passion and perseverance over years and decades.</p>`,
+        framework:{title:"The Ikigai Four-Circle Framework",items:[
+          {k:"What You Love",v:"Activities that absorb you completely, that you'd do even without reward. These point to your intrinsic motivation and flow states."},
+          {k:"What You're Good At",v:"Your developed skills, strengths, and natural abilities. Important: this includes potential — what you could be excellent at with development."},
+          {k:"What the World Needs",v:"Problems you are positioned to solve. The intersection of your skills with genuine needs creates meaningful contribution."},
+          {k:"What You Can Be Paid For",v:"The economic viability layer — how your contribution can be sustainably supported. Ikigai without this is a hobby; with it, it becomes a vocation."},
+        ],type:"fw"},
+        insight:"The sweet spot of Ikigai is the overlap of all four circles. But the framework also names the incomplete overlaps: Love + Good At but no need = Passion. Good At + Need but don't love = Profession. All four = Ikigai.",
+        exercise:{title:"Ikigai Mapping Exercise",sub:"45 minutes · Deep reflection",steps:["Get four large sheets of paper, one per circle.",
+        "LOVE: List 20+ things you love doing. Include hobbies, topics, experiences, types of work. Be generous.",
+        "GOOD AT: List 20+ skills — learned, innate, developed. Ask 3 people who know you well to add to this list.",
+        "WORLD NEEDS: What problems do you notice and care about? What would be missing if you weren't doing what you do?",
+        "PAID FOR: What economic value do these create? How have others solved similar needs?",
+        "Now create your Venn diagram. Find what appears in all four. That overlap is your starting ikigai.",
+        "Write one sentence: 'My ikigai is to [love] using [good at] to serve [world needs] in a way that [paid for].'"]}
+      },
+      {
+        id:"t6_2", icon:"🏆", name:"OKRs — Objectives & Key Results",
+        meta:"Andy Grove · Google · Goal-Setting Science · 15 min",
+        tags:["OKRs","Goals","Performance","Google","Grove"],
+        theory:`<p>OKRs (Objectives and Key Results) were developed by Andy Grove at Intel in the 1970s and brought to Google by John Doerr in 1999. Google, then a small startup, has used OKRs continuously since, attributing much of its alignment and growth to the system. Today OKRs are used by LinkedIn, Twitter, Spotify, and thousands of other organizations.</p>
+<p>The psychological foundation of OKRs aligns with Edwin Locke's Goal Setting Theory (1968) — one of the most validated theories in organizational psychology. Locke found that specific, challenging goals outperform vague ('do your best') or easy goals every time. OKRs operationalize this with precision.</p>
+<p>The key distinction: Objectives are qualitative and inspiring — they answer "where do we want to go?" Key Results are quantitative and verifiable — they answer "how will we know we've arrived?"</p>`,
+        framework:{title:"OKR Design Principles",items:[
+          {k:"Objectives",v:"Inspirational, qualitative, time-bound. 3-5 per cycle. Should be slightly uncomfortable to achieve. Answer: 'What do we want to accomplish?'"},
+          {k:"Key Results",v:"Measurable, binary or scored. 2-5 per objective. Must be specific enough that there's no debate about whether they're done."},
+          {k:"Grading",v:"OKRs are typically graded 0-1.0. Google's ideal: 0.6-0.7. If you consistently score 1.0, your OKRs aren't ambitious enough."},
+          {k:"Transparency",v:"In organizations, OKRs are public. This creates alignment — everyone can see how their work connects to the whole."},
+          {k:"Cadence",v:"Quarterly OKRs with weekly check-ins. Annual objectives with quarterly key results is a common hybrid."},
+        ],type:"fw"},
+        exercise:{title:"Personal OKR Design",sub:"30 minutes · Quarterly planning",steps:["Choose one life domain to focus on this quarter (career, health, relationships, learning).",
+        "Write one Objective: ambitious, inspirational, slightly uncomfortable. 'Become the go-to expert in my team on data analysis.'",
+        "Write 3 Key Results: specific, measurable, verifiable. 'Complete 2 advanced SQL courses by March 31.' 'Present analysis to leadership team once per month.' 'Receive positive feedback from 3 senior colleagues on my data work.'",
+        "Score your OKR now: where are you at 0-10 on each KR?",
+        "Block weekly 20-minute OKR reviews in your calendar.",
+        "Share with someone who will hold you accountable."]}
+      }
+    ]
+  },
+  {
+    id:"m7", badge:"Module 07", title:"Self-Compassion & Inner Critic",
+    desc:"The neuroscience of self-criticism and the power of kindness",
+    icon:"🌿",
+    topics:[
+      {
+        id:"t7_1", icon:"🧘", name:"Self-Compassion — The Kristin Neff Model",
+        meta:"Kristin Neff · UT Austin · Research · 16 min",
+        tags:["Self-Compassion","Neff","Inner Critic","Shame","Mindfulness"],
+        theory:`<p>Kristin Neff at the University of Texas pioneered the scientific study of self-compassion, developing a validated scale and body of research showing that self-compassion is one of the strongest predictors of psychological wellbeing, resilience, and healthy motivation.</p>
+<p>The counterintuitive finding: self-compassion does NOT reduce motivation or create complacency. In fact, research shows the opposite — self-compassionate people are more likely to try again after failure, take responsibility for mistakes (without spiraling into shame), and pursue growth-oriented goals. This is because shame is an immobilizing emotion; self-compassion is an activating one.</p>
+<p>Neff distinguishes self-compassion from self-esteem: self-esteem is contingent on performance and comparison (you feel good when you win, bad when you lose); self-compassion is unconditional and stable. Self-esteem is actually linked to narcissism; self-compassion is linked to authentic confidence.</p>`,
+        framework:{title:"Neff's Three Components of Self-Compassion",items:[
+          {k:"Self-Kindness",v:"Treating yourself with the same warmth and understanding you'd offer a good friend. Noticing when you're suffering and responding with care, not judgment."},
+          {k:"Common Humanity",v:"Recognizing that suffering, imperfection, and failure are universal human experiences — not isolated to you, not evidence that you're uniquely broken."},
+          {k:"Mindfulness",v:"Holding painful thoughts and feelings in balanced awareness — neither suppressing them nor over-identifying with them. Seeing them without being consumed."},
+        ],type:"fw"},
+        quote:{text:"With self-compassion, we give ourselves the same kindness and care we'd give to a good friend.",author:"Kristin Neff, Self-Compassion: The Proven Power of Being Kind to Yourself"},
+        exercise:{title:"The Self-Compassion Letter",sub:"20 minutes · Written practice",steps:["Think of something about yourself that causes you shame, pain, or self-criticism.",
+        "Write a letter to yourself about this struggle — but from the perspective of an unconditionally loving and wise friend who sees your full humanity.",
+        "In the letter: acknowledge the pain (mindfulness), remind yourself that imperfection is human (common humanity), offer words of kindness and encouragement (self-kindness).",
+        "Put the letter away. Read it again in 24 hours.",
+        "Notice: is your inner dialogue about this issue any different?",
+        "Repeat monthly, or whenever the inner critic is loud."]}
+      },
+      {
+        id:"t7_2", icon:"😈", name:"Taming the Inner Critic",
+        meta:"IFS · ACT · Psychology · 15 min",
+        tags:["Inner Critic","IFS","ACT","Self-Talk","Psychology"],
+        theory:`<p>The inner critic is not your enemy — it is, paradoxically, a protection mechanism. Internal Family Systems (IFS) theory, developed by Richard Schwartz, proposes that the personality is composed of multiple "parts," each with its own role. The inner critic is typically a "manager" part that believes harsh self-criticism will prevent rejection, failure, and humiliation — by criticizing you first, before the world does.</p>
+<p>Acceptance and Commitment Therapy (ACT), developed by Steven Hayes, addresses the inner critic through <strong>defusion</strong> — learning to see thoughts as just thoughts, rather than facts or commands. A thought like "I'm a failure" doesn't need to be believed, argued with, or acted on. It can simply be observed: "I notice I'm having the thought that I'm a failure."</p>
+<p>The goal isn't to silence the critic but to understand what it fears and to lead with the "Self" — the calm, curious, compassionate core described in IFS — rather than the critic.</p>`,
+        steps:[
+          {t:"Name the critic",d:"Give your inner critic a name or character. Externalizing it creates psychological distance. 'There goes The Judge again.'"},
+          {t:"Get curious, not combative",d:"Ask: What is the critic afraid of? What is it trying to protect me from? It always has a positive (if misguided) intention."},
+          {t:"Defuse with ACT",d:"Add the prefix: 'I notice I'm having the thought that...' This creates observer distance from the thought's content."},
+          {t:"Respond from the Self",d:"Once you've defused, ask: What would I say to a dear friend in this situation? That is your Self speaking. Let it speak louder."},
+          {t:"Thank and redirect",d:"'Thank you for trying to protect me. I've got this.' This isn't spiritual bypassing — it's acknowledging the part's fear while not letting it drive."},
+        ],
+        exercise:{title:"Inner Critic Dialogue",sub:"25 minutes · Journaling",steps:["Sit with a difficult self-critical thought. Write it out in full.",
+        "Now write back to it — but as a compassionate witness. Ask the critic: 'What are you afraid will happen?' Let it answer.",
+        "Ask: 'When did I first start believing this about myself?'",
+        "Now write the response from your wisest, most compassionate self.",
+        "Notice: what need was the critic trying to meet? Can you meet that need in a kinder way?",
+        "Journal what you learned about the inner critic's origin story."]}
+      }
+    ]
+  },
+  {
+    id:"m8", badge:"Module 08", title:"Personality & Self-Understanding",
+    desc:"The OCEAN model and building deep self-knowledge",
+    icon:"🔬",
+    topics:[
+      {
+        id:"t8_1", icon:"🌊", name:"The Big Five (OCEAN) Personality Model",
+        meta:"Costa & McCrae · Empirical Psychology · 18 min",
+        tags:["Big Five","OCEAN","Personality","Psychology","Research"],
+        theory:`<p>The Big Five personality model is the most scientifically validated framework in personality psychology, replicated across cultures, languages, and decades of research. Unlike MBTI (which lacks scientific validation and has poor test-retest reliability), the Big Five is continuous, stable, and predictive of real-world outcomes including relationship quality, career success, health behaviors, and life satisfaction.</p>
+<p>The model emerged from lexical analysis — researchers analyzed all personality-describing words in the English language and found they cluster into five broad dimensions. These dimensions appear to be approximately 50% heritable, with the remaining variation shaped by environment and experience.</p>
+<p>Crucially: none of the Big Five dimensions is inherently "good" or "bad." Each end of each spectrum has adaptive advantages in different contexts.</p>`,
+        framework:{title:"The OCEAN Dimensions",items:[
+          {k:"O — Openness",v:"Curiosity, creativity, intellectual engagement. High O: inventive, artistic, exploring ideas. Low O: consistent, practical, tradition-respecting. High O thrives in creative/research roles."},
+          {k:"C — Conscientiousness",v:"Self-discipline, organization, achievement orientation. Strongest predictor of career success. High C: reliable, planful. Low C: flexible, spontaneous, but less organized."},
+          {k:"E — Extraversion",v:"Social stimulation seeking, positive affect, assertiveness. Not 'social confidence' — introverts can be confident. It's about where you draw energy from."},
+          {k:"A — Agreeableness",v:"Cooperation, empathy, trust. High A: warm, conflict-averse. Low A: competitive, direct, skeptical. Low A executives sometimes outperform high A in negotiation."},
+          {k:"N — Neuroticism",v:"Emotional reactivity and tendency toward negative emotions. High N: deeply feels, sensitive, more anxiety-prone. Low N: stable, calm, less emotionally responsive."},
+        ],type:"fw"},
+        insight:"Conscientiousness is the single trait most consistently linked to health, longevity, academic achievement, and career success across studies. It can be deliberately cultivated through habit formation.",
+        exercise:{title:"OCEAN Self-Assessment & Application",sub:"30 minutes · Reflection + planning",steps:["Rate yourself on each dimension (1-10, where 10 is the high end).",
+        "Take a free validated Big Five assessment at openpsychometrics.org to compare.",
+        "For each trait, write: How does this show up as a strength? Where does it create difficulty?",
+        "Identify the one trait that most limits you in your current goals.",
+        "Design one behavioral experiment this month that stretches that trait by 10%.",
+        "Ask: In what environments does my personality profile thrive? How can I engineer more of those?"]}
+      }
+    ]
+  },
+  {
+    id:"m9", badge:"Module 09", title:"Focus, Flow & Deep Work",
+    desc:"The cognitive science of undivided attention and peak performance",
+    icon:"🌊",
+    topics:[
+      {
+        id:"t9_1", icon:"🏄", name:"Flow State — Csíkszentmihályi's Theory",
+        meta:"Mihaly Csíkszentmihályi · Positive Psychology · 16 min",
+        tags:["Flow","Csikszentmihalyi","Peak Performance","Focus"],
+        theory:`<p>Mihaly Csíkszentmihályi spent decades studying optimal experience — moments of complete absorption where time distorts, self-consciousness disappears, and performance reaches its peak. He named this state <strong>flow</strong> (1990), and it has since been replicated across athletes, artists, surgeons, programmers, teachers, and executives.</p>
+<p>Flow occurs at a precise intersection: the challenge of the task must be matched by your level of skill. Too easy → boredom. Too hard → anxiety. The sweet spot produces flow. This is why video games are so compelling — they're expertly designed to keep you at the challenge/skill edge.</p>
+<p>Neurologically, flow is associated with transient hypofrontality — the temporary silencing of the prefrontal cortex (the self-monitoring, self-critical, planning brain). This paradoxically enables higher performance by removing the "noise" of self-consciousness. DHEA, anandamide, dopamine, serotonin, norepinephrine, and endorphins all flood the system during flow.</p>`,
+        framework:{title:"The Flow Conditions",items:[
+          {k:"Clear Goals",v:"You know exactly what you're trying to accomplish in this session. Ambiguity prevents flow onset."},
+          {k:"Immediate Feedback",v:"You can tell immediately if you're on track. Coding, music, sports, and writing provide natural feedback loops."},
+          {k:"Challenge-Skill Balance",v:"The task should be ~4% harder than your current ability — challenging enough to require full engagement, achievable enough to progress."},
+          {k:"Deep Concentration",v:"No interruptions, no multitasking, no partial attention. Flow requires 100% cognitive engagement. Set up your environment accordingly."},
+          {k:"Intrinsic Motivation",v:"The activity is rewarding in itself. External rewards can actually disrupt flow by shifting attention from process to outcome."},
+        ],type:"fw"},
+        exercise:{title:"Flow Trigger Design",sub:"30 minutes · Environment architecture",steps:["Identify a task that produces or could produce flow for you.",
+        "Design the environment: What time of day? What physical space? Phone off/on? Music or silence?",
+        "Set a specific, clear goal for the session (not 'work on project' — '완 write the introduction section of the report').",
+        "Schedule a 90-minute flow block this week. Guard it fiercely.",
+        "After the session: rate your flow depth 1-10. What helped? What disrupted it?",
+        "Design your next session incorporating what you learned.",
+        "Track flow sessions weekly. Note what conditions produced the deepest states."]}
+      },
+      {
+        id:"t9_2", icon:"📵", name:"Deep Work & Digital Distraction",
+        meta:"Cal Newport · Georgetown · 15 min",
+        tags:["Deep Work","Newport","Distraction","Focus","Attention"],
+        theory:`<p>Cal Newport, a computer science professor at Georgetown, identified <strong>deep work</strong> as one of the most valuable and increasingly rare skills in the knowledge economy. Deep work is defined as professional activities performed in a state of distraction-free concentration that pushes cognitive capabilities to their limit, creating new value and improving skill.</p>
+<p>The opposite — shallow work — is non-cognitively demanding, logistical-style tasks, often performed while distracted. Newport's argument: the attention economy (social media, email, notifications) is specifically engineered to fragment attention and make deep work nearly impossible. Those who cultivate deep work gain a significant competitive advantage.</p>
+<p>The neuroscience: attention residue (Sophie Leroy's research) shows that switching tasks leaves cognitive residue from the previous task for 10-20+ minutes. Constant switching means you're never thinking with full cognitive resources on any single problem.</p>`,
+        steps:[
+          {t:"Schedule deep work blocks",d:"Treat them like unmovable appointments. Newport recommends 2-4 hours per day in blocks of 90-120 minutes."},
+          {t:"Define done",d:"Before starting: what does a successful deep work session look like? Specific deliverable, not 'working on X.'"},
+          {t:"Ritualize the start",d:"A consistent pre-work ritual (same space, same drink, phone in another room) trains the brain to shift into focus mode."},
+          {t:"Embrace boredom",d:"Stop reaching for your phone every idle moment. Boredom is practice for focus. The ability to be bored is the ability to concentrate."},
+          {t:"Shutdown ritual",d:"At day's end, review tomorrow's plan and say 'shutdown complete.' This trains the brain that deep work is over, reducing Zeigarnik effect rumination."},
+        ],
+        exercise:{title:"The Deep Work Experiment",sub:"2 weeks · Protocol",steps:["Calculate your current deep work hours per day honestly. Most knowledge workers: 30-90 minutes.",
+        "For the next 14 days: schedule and protect 2 hours of true deep work per day.",
+        "Rules: phone in another room, browser closed (or use app blocker), door closed/headphones on, one task only.",
+        "Log your output: what did you produce? How did it compare to typical days?",
+        "At week 2: what's the quality and quantity difference versus your baseline?",
+        "Design your permanent deep work schedule based on what you learned."]}
+      }
+    ]
+  },
+  {
+    id:"m10", badge:"Module 10", title:"Resilience & Thriving",
+    desc:"The science of bouncing forward — post-traumatic growth and vitality",
+    icon:"🌱",
+    topics:[
+      {
+        id:"t10_1", icon:"💪", name:"Resilience — Building Bounce-Forward Capacity",
+        meta:"Bonanno · Seligman · Resilience Research · 16 min",
+        tags:["Resilience","PERMA","Seligman","Post-Traumatic Growth"],
+        theory:`<p>Resilience research overturned a deeply held assumption: that trauma and adversity inevitably leave permanent psychological damage. Columbia psychologist George Bonanno found in longitudinal studies that most people — the majority — show natural resilience after loss and trauma: they return to baseline functioning within 1-2 years without clinical intervention.</p>
+<p>More remarkably, psychologists Richard Tedeschi and Lawrence Calhoun documented <strong>post-traumatic growth</strong> — not just returning to baseline, but emerging from adversity with greater personal strength, deeper relationships, expanded possibilities, and increased appreciation for life. This is not guaranteed or universal, but it is documented and real.</p>
+<p>Martin Seligman's PERMA model identifies the five pillars of wellbeing that both predict and protect resilience: Positive Emotions, Engagement, Relationships, Meaning, and Accomplishment.</p>`,
+        framework:{title:"Seligman's PERMA Model",items:[
+          {k:"P — Positive Emotions",v:"Experiencing positive emotions — joy, gratitude, serenity, interest, hope, pride, awe, amusement, love. Barbara Fredrickson's Broaden-and-Build theory shows positive emotions expand cognition and build lasting resources."},
+          {k:"E — Engagement",v:"Deep involvement in activities that produce flow and absorption. Using your strengths in engaging ways."},
+          {k:"R — Relationships",v:"The quality of social connections. Relationships are the single most consistent predictor of happiness across all positive psychology research."},
+          {k:"M — Meaning",v:"Belonging to and serving something you believe is bigger than yourself. Purpose that extends beyond personal pleasure."},
+          {k:"A — Accomplishment",v:"Pursuing goals for their own sake — achievement, mastery, and the satisfaction of progress."},
+        ],type:"fw"},
+        insight:"Bonanno found that people dramatically overestimate how long and intensely they will suffer after adversity — what Dan Gilbert calls 'impact bias.' This means most hardship you fear is less devastating than you predict, and you are more resilient than you believe.",
+        exercise:{title:"PERMA Life Audit",sub:"40 minutes · Quarterly review",steps:["Rate each PERMA domain 1-10 for your life right now.",
+        "For your lowest domain: write 3 specific ways it's currently low.",
+        "Write 3 small actions that could raise it by 1 point within 30 days.",
+        "Choose ONE action to start this week.",
+        "Set a calendar reminder to redo this audit in 90 days.",
+        "Bonus: share your PERMA scores with someone close. Ask them how they experience you in each domain — often their perception is illuminating."]}
+      },
+      {
+        id:"t10_2", icon:"🙏", name:"Gratitude — The Neuroscience & Practice",
+        meta:"Emmons · McCullough · UCLA · 14 min",
+        tags:["Gratitude","Neuroscience","Wellbeing","Emmons","Practice"],
+        theory:`<p>Gratitude is among the most extensively researched positive psychology interventions, with consistent effects on wellbeing, sleep quality, social relationships, and even physical health. Robert Emmons and Michael McCullough's landmark studies found that people who wrote weekly about what they were grateful for exercised more, had fewer physical complaints, and were more optimistic.</p>
+<p>Neurologically, gratitude activates the medial prefrontal cortex (associated with reward and social bonding), releases dopamine and serotonin, and — with regular practice — appears to strengthen the neural circuits for noticing positive experiences. It's not just a mood trick; it's attention training.</p>
+<p>The critical caveat: generic gratitude lists ("I'm grateful for my family") lose effectiveness quickly. Specificity and vividness maintain the neurological impact. "I'm grateful for the way my friend texted me at exactly the right moment today" is neurologically different from "I'm grateful for friends."</p>`,
+        steps:[
+          {t:"Evening specificity practice",d:"3 specific, vivid moments of gratitude before sleep. Describe them with sensory detail. Include who, what, where."},
+          {t:"Gratitude letters",d:"Monthly: write a full letter of gratitude to someone who has positively impacted you. Optionally deliver it in person (Seligman's data: significant wellbeing boost for both parties)."},
+          {t:"Savor the good",d:"When something good happens, consciously pause. Notice it. Describe it mentally. Let it land. Savoring — conscious appreciation in the moment — amplifies positive experiences."},
+          {t:"Gratitude in difficulty",d:"The advanced practice: finding genuine appreciation even in challenges. 'This failure taught me ___.' Not toxic positivity — honest learning."},
+        ],
+        exercise:{title:"The 21-Day Gratitude Challenge",sub:"5 minutes daily · Research-backed protocol",steps:["Every morning for 21 days, write 3 specific, new things you are grateful for.",
+        "They must be different each day (this is what makes the practice active — you must scan for new positives).",
+        "Each entry must include: Who or what? What specifically happened? Why did it matter to you?",
+        "At the end of the 21 days, review all your entries.",
+        "Notice: Has your baseline attention to positive experiences shifted?",
+        "Choose one person from your list and write them a brief gratitude message."]}
+      }
+    ]
+  }
+];
+
+// ─── BUILD SIDEBAR ────────────────────────────────────────────────────────────
+const nav = document.getElementById('moduleNav');
+MODULES.forEach((mod, mi) => {
+  const block = document.createElement('div');
+  block.className = 'mod-block';
+  block.innerHTML = `
+    <div class="mod-header" id="mh_${mod.id}" onclick="toggleModule('${mod.id}')">
+      <div class="mod-num">${mi+1}</div>
+      <span>${mod.title}</span>
+      <span class="mod-arrow">▶</span>
+    </div>
+    <div class="topic-list" id="tl_${mod.id}">
+      ${mod.topics.map(t=>`<div class="topic-item" id="si_${t.id}" onclick="scrollTo('${t.id}')">${t.name}</div>`).join('')}
+    </div>`;
+  nav.appendChild(block);
+});
+
+function toggleModule(modId){
+  const h = document.getElementById('mh_'+modId);
+  const l = document.getElementById('tl_'+modId);
+  const isOpen = l.classList.contains('open');
+  document.querySelectorAll('.mod-header').forEach(x=>x.classList.remove('open','active'));
+  document.querySelectorAll('.topic-list').forEach(x=>x.classList.remove('open'));
+  if(!isOpen){ h.classList.add('open','active'); l.classList.add('open'); }
+}
+
+function scrollTo(topicId){
+  const el = document.getElementById(topicId);
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+  document.querySelectorAll('.topic-item').forEach(x=>x.classList.remove('active'));
+  const si = document.getElementById('si_'+topicId);
+  if(si){ si.classList.add('active','visited'); }
+  updateBreadcrumb(topicId);
+}
+
+function updateBreadcrumb(topicId){
+  for(const mod of MODULES){
+    for(const t of mod.topics){
+      if(t.id===topicId){
+        document.getElementById('breadcrumb').textContent = mod.badge + ' → ' + t.name;
+        return;
+      }
+    }
+  }
+}
+
+// ─── BUILD CONTENT ────────────────────────────────────────────────────────────
+const area = document.getElementById('contentArea');
+
+MODULES.forEach(mod => {
+  const sec = document.createElement('div');
+  sec.className = 'module-section';
+  sec.id = mod.id;
+
+  let html = `
+    <div class="module-title-bar">
+      <div>
+        <div class="module-badge">${mod.badge}</div>
+        <div class="module-title">${mod.icon} ${mod.title}</div>
+        <div class="module-desc">${mod.desc}</div>
+      </div>
+    </div>`;
+
+  mod.topics.forEach(t => {
+    html += `<div class="topic" id="${t.id}">
+      <div class="topic-header" onclick="toggleTopic('${t.id}')">
+        <div class="topic-icon">${t.icon}</div>
+        <div class="topic-header-text">
+          <div class="topic-name">${t.name}</div>
+          <div class="topic-meta">${t.meta}</div>
+        </div>
+        <div class="topic-toggle">▼</div>
+      </div>
+      <div class="topic-body" id="tb_${t.id}">`;
+
+    // Tags
+    if(t.tags) html += `<div class="tag-row">${t.tags.map(tag=>`<span class="tag">${tag}</span>`).join('')}</div>`;
+
+    // Theory
+    if(t.theory) html += `<div class="theory"><h3 class="section-label">Theory & Research</h3>${t.theory}</div>`;
+
+    // Framework
+    if(t.framework){
+      if(t.framework.type==='table'){
+        html += `<div class="framework-box"><h4>📐 ${t.framework.title}</h4>
+          <table class="compare"><tr><th>Dimension</th><th>Fixed Mindset</th><th>Growth Mindset</th></tr>`;
+        t.framework.items.forEach(r=>{
+          html += `<tr><td><strong>${r.k}</strong></td><td>${r.fixed}</td><td>${r.growth}</td></tr>`;
+        });
+        html += `</table></div>`;
+      } else {
+        html += `<div class="framework-box"><h4>📐 ${t.framework.title}</h4><div class="fw-grid">`;
+        t.framework.items.forEach(item=>{
+          const val = item.v || (item.fixed ? `Fixed: ${item.fixed}<br>Growth: ${item.growth}` : '');
+          html += `<div class="fw-item"><strong>${item.k}</strong><span>${val}</span></div>`;
+        });
+        html += `</div></div>`;
+      }
+    }
+
+    // Distortions
+    if(t.distortions){
+      html += `<h3 class="section-label">The 10 Cognitive Distortions</h3><div class="distortion-grid">`;
+      t.distortions.forEach(d=>{
+        html += `<div class="distortion-card"><div class="d-name">${d.name}</div><div class="d-def">${d.def}</div><div class="d-fix">${d.fix}</div></div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Insight
+    if(t.insight) html += `<div class="callout callout-insight">${t.insight}</div>`;
+
+    // Quote
+    if(t.quote) html += `<div class="callout callout-quote">${t.quote.text}<cite>— ${t.quote.author}</cite></div>`;
+
+    // Warning
+    if(t.warning) html += `<div class="callout callout-warning">${t.warning}</div>`;
+
+    // Tip
+    if(t.tip) html += `<div class="callout callout-tip">${t.tip}</div>`;
+
+    // Steps
+    if(t.steps){
+      html += `<h3 class="section-label">Process & Implementation</h3><div class="steps">`;
+      t.steps.forEach(s => {
+        html += `<div class="step-item"><div class="step-num"></div><div class="step-content"><strong>${s.t}</strong><span>${s.d}</span></div></div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Ladder (social anxiety)
+    if(t.ladder){
+      html += `<h3 class="section-label">Graduated Exposure Ladder</h3><div class="expose-ladder">`;
+      t.ladder.forEach(r => {
+        const cls = r.fear==='Low'?'low':r.fear==='Med'?'med':'high';
+        html += `<div class="expose-rung"><div class="fear-num">0${r.level}</div><div><strong>${r.item}</strong></div><div class="fear-badge ${cls}">${r.fear}</div></div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Exercise
+    if(t.exercise){
+      html += `<div class="exercise-box">
+        <h4>${t.exercise.title}</h4>
+        <div class="ex-sub">${t.exercise.sub}</div>
+        <ol>${t.exercise.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>`;
+    }
+
+    html += `<a class="to-top" href="#top">↑ Back to top</a>`;
+    html += `</div></div>`; // close topic-body, topic
+  });
+
+  sec.innerHTML = html;
+  area.appendChild(sec);
+});
+
+// ─── TOGGLE TOPIC ─────────────────────────────────────────────────────────────
+function toggleTopic(id){
+  const header = document.querySelector(`#${id} .topic-header`);
+  const body = document.getElementById('tb_'+id);
+  const isOpen = body.classList.contains('open');
+  if(isOpen){ body.classList.remove('open'); header.classList.remove('expanded'); }
+  else { body.classList.add('open'); header.classList.add('expanded'); }
+}
+
+// ─── SCROLL PROGRESS ──────────────────────────────────────────────────────────
+const main = document.getElementById('main');
+const fill = document.getElementById('progressFill');
+main.addEventListener('scroll',()=>{
+  const pct = main.scrollTop/(main.scrollHeight-main.clientHeight)*100;
+  fill.style.width = Math.min(pct,100)+'%';
+});
+
+// Auto-open first module
+toggleModule('m1');
+</script>
+</body>
+</html>
